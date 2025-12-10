@@ -1,0 +1,9 @@
+region,product,quarter,sales,profit
+North,Widget A,Q1,15000,3000
+North,Widget B,Q1,22000,4400
+South,Widget A,Q1,18500,3700
+South,Widget C,Q1,12000,2400
+East,Widget B,Q2,28000,5600
+East,Widget A,Q2,19500,3900
+West,Widget C,Q2,16000,3200
+West,Widget A,Q2,21000,4200

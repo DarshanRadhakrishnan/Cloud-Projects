@@ -1,0 +1,6 @@
+customer_id,first_name,last_name,email,phone,city,country
+C011,Maria,White,maria.white@email.com,555-0301,Austin,USA
+C012,Christopher,Harris,c.harris@email.com,555-0302,Jacksonville,USA
+C013,Patricia,Martin,p.martin@email.com,555-0303,Fort Worth,USA
+C014,Daniel,Garcia,d.garcia@email.com,555-0304,Columbus,USA
+C015,Nancy,Rodriguez,n.rodriguez@email.com,555-0305,Charlotte,USA
