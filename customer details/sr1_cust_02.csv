@@ -1,6 +1,0 @@
-customer_id,first_name,last_name,email,phone,city,country
-C006,Robert,Miller,r.miller@email.com,555-0201,Philadelphia,USA
-C007,Jennifer,Taylor,j.taylor@email.com,555-0202,San Antonio,USA
-C008,David,Anderson,d.anderson@email.com,555-0203,San Diego,USA
-C009,Lisa,Thomas,lisa.t@email.com,555-0204,Dallas,USA
-C010,William,Jackson,w.jackson@email.com,555-0205,San Jose,USA
