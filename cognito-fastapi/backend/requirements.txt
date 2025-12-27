@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+python-jose
+requests
+boto3
+python-dotenv
