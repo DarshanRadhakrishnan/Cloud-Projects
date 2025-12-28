@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Installing dependencies..."
+      - python -m pip install --upgrade pip
+      - pip install -r requirements.txt
+  
+  build:
+    commands:
+      - echo "Running unit tests..."
+      - python -m pytest tests/ -v --tb=short
+      - echo "Tests completed successfully!"
+
+artifacts:
+  files:
+    - '**/*'
+  name: TodoAPIArtifact
+
+cache:
+  paths:
+    - '/root/.cache/pip/**/*'
