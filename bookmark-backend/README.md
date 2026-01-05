@@ -158,3 +158,45 @@ sam delete --stack-name bookmark-backend
 For an introduction to the AWS SAM specification, the AWS SAM CLI, and serverless application concepts, see the [AWS SAM Developer Guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html).
 
 Next, you can use the AWS Serverless Application Repository to deploy ready-to-use apps that go beyond Hello World samples and learn how authors developed their applications. For more information, see the [AWS Serverless Application Repository main page](https://aws.amazon.com/serverless/serverlessrepo/) and the [AWS Serverless Application Repository Developer Guide](https://docs.aws.amazon.com/serverlessrepo/latest/devguide/what-is-serverlessrepo.html).
+
+## Why AWS SAM (Serverless Application Model)?
+
+AWS Serverless Application Model (AWS SAM) is a framework that simplifies the development and deployment of serverless applications on AWS. It allows developers to define cloud infrastructure such as APIs, Lambda functions, and databases using code instead of manual configuration.
+
+### Why AWS SAM was used in this project
+
+This project required building a fully serverless backend using AWS services while deploying everything directly from the development environment. AWS SAM was chosen for the following reasons:
+
+- **Infrastructure as Code (IaC)**  
+  All backend resources such as API Gateway, Lambda functions, DynamoDB tables, and permissions are defined in a single `template.yaml` file. This makes the infrastructure reproducible, version-controlled, and easy to maintain.
+
+- **Simplified Serverless Development**  
+  AWS SAM provides high-level abstractions like `AWS::Serverless::Function` and `AWS::Serverless::Api`, which automatically handle IAM roles, permissions, and service integrations. This reduces boilerplate configuration compared to raw CloudFormation.
+
+- **Seamless Deployment from IDE**  
+  Using the SAM CLI, the entire backend can be built and deployed directly from VS Code using simple commands such as `sam build` and `sam deploy`, without manually configuring resources in the AWS Console.
+
+- **Native AWS Integration**  
+  SAM integrates natively with AWS services such as Lambda, API Gateway, DynamoDB, and Amazon Cognito, making it ideal for building secure and scalable serverless applications.
+
+- **Scalability and Cost Efficiency**  
+  The serverless resources deployed via SAM automatically scale based on demand and follow a pay-per-use model, eliminating the need for server provisioning or capacity planning.
+
+### Summary
+
+AWS SAM was used in this project to implement a clean, secure, and scalable serverless backend using best industry practices. It enabled faster development, consistent deployments, and clear separation between application logic and infrastructure, making it well-suited for both learning and real-world serverless applications.
+
+
+## API Gateway Routing and User Identification in the Backend
+
+In this application, the frontend communicates with the backend using standard HTTP requests made through `axios.get()` and `axios.post()`. These requests are sent to an endpoint provided by Amazon API Gateway, not directly to AWS Lambda.
+
+When a request reaches API Gateway, it first examines the HTTP method and request path. For example, a request with method `POST` and path `/bookmarks` is matched against the routes defined in the AWS SAM template. Each route in the template maps a specific HTTP method and path combination to a particular Lambda function. This routing configuration allows API Gateway to determine which Lambda function should handle the request. Based on this match, API Gateway forwards the request to the corresponding Lambda function.
+
+Before forwarding the request, API Gateway performs authentication. The frontend includes a JSON Web Token (JWT) in the `Authorization` header of each request. API Gateway validates this token using an Amazon Cognito User Pool authorizer. If the token is missing or invalid, the request is rejected with an unauthorized response and the Lambda function is never invoked. This ensures that only authenticated users can access the backend APIs.
+
+Once the token is successfully validated, API Gateway decodes it and extracts user-related claims such as the unique user identifier, email address, and username. These claims are then injected into the request context that is passed to the Lambda function. As a result, the Lambda function automatically receives information about the authenticated user without performing any authentication logic itself.
+
+Inside the Lambda function, the authenticated user’s identity can be accessed through the request context. The unique user identifier is obtained from the `sub` claim, which allows the function to identify which user made the request. This user identifier is then used to perform user-specific operations, such as storing or retrieving that user’s bookmarks from DynamoDB.
+
+By using API Gateway for routing and authentication, the backend cleanly separates responsibilities. API Gateway handles request routing and security, Cognito manages user identity, and Lambda focuses solely on executing business logic. This design follows serverless best practices and ensures a secure, scalable, and maintainable backend architecture.
