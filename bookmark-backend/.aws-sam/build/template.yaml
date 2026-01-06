@@ -1,104 +1,90 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Serverless Bookmark Application Backend
-
 Globals:
   Function:
     Runtime: nodejs18.x
     Timeout: 10
     MemorySize: 128
-
 Resources:
-
-  # -----------------------------
-  # DynamoDB Table
-  # -----------------------------
   BookmarkTable:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: Bookmarks
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
-        - AttributeName: userId
-          AttributeType: S
-        - AttributeName: bookmarkId
-          AttributeType: S
+      - AttributeName: userId
+        AttributeType: S
+      - AttributeName: bookmarkId
+        AttributeType: S
       KeySchema:
-        - AttributeName: userId
-          KeyType: HASH
-        - AttributeName: bookmarkId
-          KeyType: RANGE
-
-  # -----------------------------
-  # API Gateway with Cognito Auth
-  # -----------------------------
+      - AttributeName: userId
+        KeyType: HASH
+      - AttributeName: bookmarkId
+        KeyType: RANGE
   BookmarkApi:
     Type: AWS::Serverless::Api
     Properties:
       Name: BookmarkApi
       StageName: prod
-      Cors: "'http://localhost:3000'"
+      Cors: '''http://localhost:3000'''
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
         Authorizers:
           CognitoAuthorizer:
             UserPoolArn: arn:aws:cognito-idp:us-east-1:492267599260:userpool/us-east-1_y7SR1nUQN
-
-
-            
-
-
-  # -----------------------------
-  # Lambda: Create Bookmark
-  # POST /bookmarks
-  # -----------------------------
   CreateBookmarkFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/createBookmark/
+      CodeUri: CreateBookmarkFunction
       Handler: app.handler
       Environment:
         Variables:
-          TABLE_NAME: !Ref BookmarkTable
+          TABLE_NAME:
+            Ref: BookmarkTable
       Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref BookmarkTable
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: BookmarkTable
       Events:
         CreateBookmarkApi:
           Type: Api
           Properties:
-            RestApiId: !Ref BookmarkApi
+            RestApiId:
+              Ref: BookmarkApi
             Path: /bookmarks
             Method: POST
             Auth:
               Authorizer: CognitoAuthorizer
-
-  # -----------------------------
-  # Lambda: Get Bookmarks
-  # GET /bookmarks
-  # -----------------------------
+    Metadata:
+      SamResourceId: CreateBookmarkFunction
   GetBookmarksFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/getBookmarks/
+      CodeUri: GetBookmarksFunction
       Handler: app.handler
       Environment:
         Variables:
-          TABLE_NAME: !Ref BookmarkTable
+          TABLE_NAME:
+            Ref: BookmarkTable
       Policies:
-        - DynamoDBReadPolicy:
-            TableName: !Ref BookmarkTable
+      - DynamoDBReadPolicy:
+          TableName:
+            Ref: BookmarkTable
       Events:
         GetBookmarksApi:
           Type: Api
           Properties:
-            RestApiId: !Ref BookmarkApi
+            RestApiId:
+              Ref: BookmarkApi
             Path: /bookmarks
             Method: GET
             Auth:
               Authorizer: CognitoAuthorizer
-
+    Metadata:
+      SamResourceId: GetBookmarksFunction
 Outputs:
   ApiUrl:
     Description: API Gateway endpoint URL
-    Value: !Sub "https://${BookmarkApi}.execute-api.${AWS::Region}.amazonaws.com/prod"
+    Value:
+      Fn::Sub: https://${BookmarkApi}.execute-api.${AWS::Region}.amazonaws.com/prod
