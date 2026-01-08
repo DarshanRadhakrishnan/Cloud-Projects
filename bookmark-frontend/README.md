@@ -68,3 +68,32 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+## Why AWS Amplify and Its Role in the Frontend
+
+AWS Amplify is a frontend development platform that simplifies the integration of web applications with AWS services. In this project, AWS Amplify is used to bridge the gap between the React frontend and the serverless backend deployed using AWS SAM.
+
+### Why AWS Amplify Was Used
+
+The frontend of this application requires secure user authentication, token management, and seamless communication with protected backend APIs. Implementing these features manually would require significant effort and could introduce security risks. AWS Amplify was chosen because it provides a high-level abstraction for frontend developers, enabling secure and scalable integration with AWS services without handling low-level configurations.
+
+### Role of AWS Amplify in This Project
+
+AWS Amplify performs the following key functions in the application:
+
+- **Authentication Management**  
+  Amplify configures and integrates Amazon Cognito User Pools to provide user sign-up and sign-in functionality. It manages password handling, validation, and secure authentication workflows automatically.
+
+- **Token Handling and Session Management**  
+  After successful authentication, Amplify securely stores JSON Web Tokens (JWTs) in the browser and automatically refreshes them when required. This ensures that authenticated sessions remain valid without manual intervention.
+
+- **Secure API Access**  
+  Amplify enables the React frontend to retrieve authentication tokens and attach them to HTTP requests sent to the backend APIs. These tokens are used by Amazon API Gateway to authenticate requests before invoking AWS Lambda functions.
+
+- **Simplified Frontend–Backend Integration**  
+  Amplify generates configuration files (such as `aws-exports.js`) that allow the frontend application to communicate with AWS resources using correct region and service identifiers. This removes the need for hard-coded credentials or manual AWS SDK configuration.
+
+### Summary
+
+AWS Amplify is used in this project to simplify frontend development while maintaining strong security and scalability. It abstracts authentication complexity, securely manages user sessions, and enables the React frontend to interact with a Cognito-protected serverless backend in a clean and maintainable manner.
