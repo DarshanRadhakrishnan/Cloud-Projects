@@ -37,17 +37,16 @@ Resources:
     Properties:
       Name: BookmarkApi
       StageName: prod
-      Cors: "'http://localhost:3000'"
+      Cors:
+        AllowOrigin: "'http://localhost:3000'"
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
+        AddDefaultAuthorizerToCorsPreflight: false
         Authorizers:
           CognitoAuthorizer:
             UserPoolArn: arn:aws:cognito-idp:us-east-1:492267599260:userpool/us-east-1_y7SR1nUQN
-
-
-            
-
-
   # -----------------------------
   # Lambda: Create Bookmark
   # POST /bookmarks
