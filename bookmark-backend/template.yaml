@@ -37,6 +37,7 @@ Resources:
     Properties:
       Name: BookmarkApi
       StageName: prod
+      TracingEnabled: true #to trace a request API Gateway → Lambda → DynamoDB
       Cors:
         AllowOrigin: "'http://localhost:3000'"
         AllowMethods: "'GET,POST,OPTIONS'"
@@ -54,6 +55,7 @@ Resources:
   CreateBookmarkFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Tracing: Active #to trace a request API Gateway → Lambda → DynamoDB
       CodeUri: src/createBookmark/
       Handler: app.handler
       Environment:
@@ -81,6 +83,7 @@ Resources:
     Properties:
       CodeUri: src/getBookmarks/
       Handler: app.handler
+      Tracing: Active #to trace a request API Gateway → Lambda → DynamoDB
       Environment:
         Variables:
           TABLE_NAME: !Ref BookmarkTable
