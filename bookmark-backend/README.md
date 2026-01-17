@@ -200,3 +200,97 @@ Once the token is successfully validated, API Gateway decodes it and extracts us
 Inside the Lambda function, the authenticated user’s identity can be accessed through the request context. The unique user identifier is obtained from the `sub` claim, which allows the function to identify which user made the request. This user identifier is then used to perform user-specific operations, such as storing or retrieving that user’s bookmarks from DynamoDB.
 
 By using API Gateway for routing and authentication, the backend cleanly separates responsibilities. API Gateway handles request routing and security, Cognito manages user identity, and Lambda focuses solely on executing business logic. This design follows serverless best practices and ensures a secure, scalable, and maintainable backend architecture.
+
+## Phase 2 — Observability and Monitoring
+
+### Objectives Achieved
+- End-to-end request tracing
+- Structured logging for troubleshooting
+- Metrics and alarms for operational health
+- Distributed tracing and service visualization
+
+### What Was Implemented
+- Enabled AWS X-Ray tracing for API Gateway and Lambda
+- Added structured logs inside Lambda functions
+- Used CloudWatch Logs to inspect application behavior
+- Used CloudWatch metrics to monitor errors and latency
+- Used X-Ray and CloudWatch ServiceLens to troubleshoot failures
+
+### Key Learnings
+- CloudWatch log groups are created only after Lambda is invoked
+- Structured logs improve debugging and searchability
+- X-Ray provides visibility into request flow and performance bottlenecks
+- ServiceLens correlates logs, metrics, and traces into a single view
+
+---
+
+## Phase 3 — Application Security Hardening
+
+### Objectives Achieved
+- Protection against common external attacks
+- Controlled access to APIs
+- Secure backend permissions
+- Secure handling of secrets and credentials
+
+---
+
+## Phase 4 — Secure Secrets and Configuration Management
+
+### Understanding Gained
+
+#### Question Asked:
+**Should credentials used in Lambda be passed as parameters?**
+
+#### Answer Learned:
+No. Sensitive credentials must never be hardcoded or passed as parameters.
+
+### Correct Approach Implemented
+- Sensitive values are stored in **AWS Secrets Manager**
+- Secrets are encrypted using **AWS KMS**
+- Lambda functions are granted permission to read secrets at runtime using IAM
+- Secrets are retrieved dynamically during execution and never stored in code
+
+### Parameter Store vs Secrets Manager
+- **Parameter Store**: Used for non-sensitive configuration values
+- **Secrets Manager**: Used for sensitive credentials such as API keys and tokens
+
+---
+
+## Frontend Configuration Handling
+
+### Question Asked:
+**Where should frontend configuration values be stored?**
+
+### Answer Learned:
+Frontend configuration values are not secrets and should be stored as environment variables.
+
+### Correct Implementation
+- API Gateway URL stored using environment variables
+- Cognito configuration managed by Amplify (`aws-exports.js`)
+- No secrets are stored or exposed in frontend code
+
+---
+
+## Phase 5 — API and Network Security
+
+### What Was Implemented
+- AWS WAF attached to API Gateway
+- AWS Managed Rule Sets to protect against:
+  - SQL Injection
+  - Cross-site scripting (XSS)
+  - Malicious request patterns
+- API Gateway resource policy to restrict unauthorized access
+- API throttling to protect against abuse and DoS attacks
+
+---
+
+## Security Best Practices Applied
+
+- Least privilege IAM roles for Lambda functions
+- No hardcoded secrets in code or repositories
+- Encryption at rest using AWS KMS
+- Authenticated API access using Cognito authorizers
+- Preflight CORS requests allowed without authentication
+- Defense-in-depth security architecture
+
+---
